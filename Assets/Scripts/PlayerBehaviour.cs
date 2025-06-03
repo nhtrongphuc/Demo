@@ -22,6 +22,10 @@ public class PlayerBehaviour : MonoBehaviour
         {
             HandleMap1();
         }
+        else if (currentScene == "Map 2")
+        {
+            HandleMap2();
+        }
         else if (currentScene == "Map 3")
         {
             HandleMap3();
@@ -42,10 +46,25 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    // ---------------------- MAP 2 ----------------------
+    void HandleMap2()
+    {
+        // Điều khiển trái/phải
+        float moveX = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
+
+        // Nhảy bằng Space nếu đang chạm đất
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            isGrounded = false;
+        }
+    }
+
     // ---------------------- MAP 3 ----------------------
     void HandleMap3()
     {
-        // Di chuyển 4 hướng (top-down)
+        // Di chuyển top-down 4 hướng
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
