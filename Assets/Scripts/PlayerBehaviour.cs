@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
+
     private Rigidbody2D rb;
     private bool isGrounded = false;
 
@@ -15,25 +16,45 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Update()
     {
-        string currentScene = SceneManager.GetActiveScene().name;
 
-        if (currentScene == "Map 1")
+        if (SceneManager.GetActiveScene().name == "Map 1")
         {
-            HandleMap1();
-        }
-    }
 
-    void HandleMap1()
-    {
-        // Di chuy?n t? ??ng sang ph?i, gi? y (tr?c d?c) hi?n t?i
-        rb.linearVelocity = new Vector2(moveSpeed, rb.linearVelocity.y);
+        string sceneName = SceneManager.GetActiveScene().name;
 
-        // Nh?y khi nh?n chu?t tr�i v� ?ang ch?m ??t
-        if (Input.GetMouseButtonDown(0) && isGrounded)
+        if (sceneName == "Map 1")
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            isGrounded = false; // Ch?n nh?y li�n t?c
+            // Tự động di chuyển và nhảy khi bấm chuột (Map 1)
+
+            rb.linearVelocity = new Vector2(moveSpeed, rb.linearVelocity.y);
+
+            if (Input.GetMouseButtonDown(0) && isGrounded)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                isGrounded = false;
+            }
         }
+
+        else if (sceneName == "Map 2")
+        {
+            // Điều khiển trái phải và nhảy thủ công (Map 2)
+            float moveX = Input.GetAxis("Horizontal");
+            rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
+
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                isGrounded = false;
+            }
+        }
+        else if (sceneName == "Map 3")
+        {
+            // Điều khiển 2D cả X và Y (Map 3)
+            float moveX = Input.GetAxis("Horizontal");
+            float moveY = Input.GetAxis("Vertical");
+            rb.linearVelocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
+        }
+
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -51,4 +72,4 @@ public class PlayerBehaviour : MonoBehaviour
             isGrounded = false;
         }
     }
-}
+}}
