@@ -5,6 +5,7 @@ public class PlayerBehaviour : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
+
     private Rigidbody2D rb;
     private bool isGrounded = false;
 
@@ -15,38 +16,51 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Update()
     {
-        string currentScene = SceneManager.GetActiveScene().name;
+        string sceneName = SceneManager.GetActiveScene().name;
 
-        if (currentScene == "Map 2")
+        if (sceneName == "Map 1")
         {
-            HandleMap2();
+            // Tự động di chuyển và nhảy khi bấm chuột (Map 1)
+            rb.linearVelocity = new Vector2(moveSpeed, rb.linearVelocity.y);
+
+            if (Input.GetMouseButtonDown(0) && isGrounded)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                isGrounded = false;
+            }
+        }
+        else if (sceneName == "Map 2")
+        {
+            // Điều khiển trái phải và nhảy thủ công (Map 2)
+            float moveX = Input.GetAxis("Horizontal");
+            rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
+
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                isGrounded = false;
+            }
+        }
+        else if (sceneName == "Map 3")
+        {
+            // Điều khiển 2D cả X và Y (Map 3)
+            float moveX = Input.GetAxis("Horizontal");
+            float moveY = Input.GetAxis("Vertical");
+            rb.linearVelocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
         }
     }
 
-    void HandleMap2()
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        float moveInput = Input.GetAxisRaw("Horizontal");
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        }
-    }
-
-    // Chạm vào object có tag Ground
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
         }
     }
 
-    // Rời khỏi object có tag Ground
-    private void OnCollisionExit2D(Collision2D collision)
+    void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
         }
