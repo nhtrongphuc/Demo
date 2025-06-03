@@ -4,7 +4,9 @@ using UnityEngine.SceneManagement;
 public class PlayerBehaviour : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public float jumpForce = 7f;
     private Rigidbody2D rb;
+    private bool isGrounded = false;
 
     void Start()
     {
@@ -13,11 +15,40 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "Map 3")
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (currentScene == "Map 2")
         {
-            float moveX = Input.GetAxis("Horizontal");
-            float moveY = Input.GetAxis("Vertical");
-            rb.linearVelocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
+            HandleMap2();
+        }
+    }
+
+    void HandleMap2()
+    {
+        float moveInput = Input.GetAxisRaw("Horizontal");
+        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+    }
+
+    // Chạm vào object có tag Ground
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    // Rời khỏi object có tag Ground
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+        {
+            isGrounded = false;
         }
     }
 }
