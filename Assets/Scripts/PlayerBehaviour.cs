@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+
+
+using UnityEngine;
+
 using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
     public float moveSpeed = 5f;
+
     public float jumpForce = 7f;
     private Rigidbody2D rb;
     private bool isGrounded = false;
+
 
     void Start()
     {
@@ -15,6 +20,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void Update()
     {
+
         string currentScene = SceneManager.GetActiveScene().name;
 
         if (currentScene == "Map 1")
@@ -49,6 +55,13 @@ public class PlayerBehaviour : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+
+        if (SceneManager.GetActiveScene().name == "Map 3")
+        {
+            float moveX = Input.GetAxis("Horizontal");
+            float moveY = Input.GetAxis("Vertical");
+            rb.linearVelocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
+
         }
     }
-}
+}}
