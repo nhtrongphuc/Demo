@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
+
     private Rigidbody2D rb;
     private bool isGrounded = false;
 
@@ -21,21 +22,37 @@ public class PlayerBehaviour : MonoBehaviour
         {
             HandleMap1();
         }
-    }
-
-    void HandleMap1()
-    {
-        // Di chuy?n t? ??ng sang ph?i, gi? y (tr?c d?c) hi?n t?i
-        rb.linearVelocity = new Vector2(moveSpeed, rb.linearVelocity.y);
-
-        // Nh?y khi nh?n chu?t tr�i v� ?ang ch?m ??t
-        if (Input.GetMouseButtonDown(0) && isGrounded)
+        else if (currentScene == "Map 3")
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            isGrounded = false; // Ch?n nh?y li�n t?c
+            HandleMap3();
         }
     }
 
+    // ---------------------- MAP 1 ----------------------
+    void HandleMap1()
+    {
+        // Di chuyển tự động sang phải
+        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+
+        // Nhảy khi nhấn chuột trái và đang chạm đất
+        if (Input.GetMouseButtonDown(0) && isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            isGrounded = false;
+        }
+    }
+
+    // ---------------------- MAP 3 ----------------------
+    void HandleMap3()
+    {
+        // Di chuyển 4 hướng (top-down)
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
+
+        rb.velocity = new Vector2(moveX * moveSpeed, moveY * moveSpeed);
+    }
+
+    // ---------------------- GROUND CHECK ----------------------
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
